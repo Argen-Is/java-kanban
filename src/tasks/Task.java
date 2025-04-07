@@ -1,3 +1,5 @@
+package tasks;
+
 public class Task {
     private static int idCounter = 1;
     private int id;
