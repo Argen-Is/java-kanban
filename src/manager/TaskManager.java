@@ -20,7 +20,7 @@ public class TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
             epic.addSubtask(subtask);  // Добавляем подзадачу в эпик
-            updateEpicStatus(epic);  // Обновляем статус эпика
+            epic.updateStatus();  // Обновляем статус эпика
         }
     }
 
@@ -39,7 +39,7 @@ public class TaskManager {
             Epic epic = epics.get(subtask.getEpicId());
             if (epic != null) {
                 epic.removeSubtask(subtask);  // Удаляем подзадачу из эпика
-                updateEpicStatus(epic);  // Обновляем статус эпика
+                epic.updateStatus();  // Обновляем статус эпика
             }
         }
     }
@@ -88,11 +88,6 @@ public class TaskManager {
             }
         }
         return epicSubtasks;
-    }
-
-    // Приватный метод для обновления статуса эпика
-    private void updateEpicStatus(Epic epic) {
-        epic.updateStatus();
     }
 
     // Вывод всех задач, подзадач и эпиков (оставлены для удобства тестирования)
