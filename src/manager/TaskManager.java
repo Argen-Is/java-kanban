@@ -2,15 +2,13 @@ package manager;
 
 import tasks.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TaskManager {
     private Map<Integer, Task> tasks = new HashMap<>();
     private Map<Integer, Subtask> subtasks = new HashMap<>();
     private Map<Integer, Epic> epics = new HashMap<>();
 
-    // Методы для добавления задач, подзадач и эпиков
     public void addTask(Task task) {
         tasks.put(task.getId(), task);
     }
@@ -19,8 +17,8 @@ public class TaskManager {
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
-            epic.addSubtask(subtask);  // Добавляем подзадачу в эпик
-            epic.updateStatus();  // Обновляем статус эпика
+            epic.addSubtask(subtask);
+            epic.updateStatus();
         }
     }
 
@@ -28,7 +26,20 @@ public class TaskManager {
         epics.put(epic.getId(), epic);
     }
 
-    // Методы для удаления задач, подзадач и эпиков
+    // Получение задачи, подзадачи и эпика по ID
+    public Task getTask(int id) {
+        return tasks.get(id);
+    }
+
+    public Subtask getSubtask(int id) {
+        return subtasks.get(id);
+    }
+
+    public Epic getEpic(int id) {
+        return epics.get(id);
+    }
+
+    // Удаление задачи, подзадачи и эпика по ID
     public void removeTask(int id) {
         tasks.remove(id);
     }
@@ -38,8 +49,8 @@ public class TaskManager {
         if (subtask != null) {
             Epic epic = epics.get(subtask.getEpicId());
             if (epic != null) {
-                epic.removeSubtask(subtask);  // Удаляем подзадачу из эпика
-                epic.updateStatus();  // Обновляем статус эпика
+                epic.removeSubtask(subtask);
+                epic.updateStatus();
             }
         }
     }
@@ -48,49 +59,57 @@ public class TaskManager {
         Epic epic = epics.remove(id);
         if (epic != null) {
             for (Subtask subtask : epic.getSubtasks()) {
-                subtasks.remove(subtask.getId());  // Удаляем подзадачи эпика
+                subtasks.remove(subtask.getId());
             }
         }
     }
 
-    // Методы для удаления всех задач, подзадач и эпиков
+    // Удаление всех задач, подзадач и эпиков
     public void removeAllTasks() {
         tasks.clear();
     }
 
     public void removeAllSubtasks() {
+        for (Epic epic : epics.values()) {
+            epic.clearSubtasks(); // Очистка подзадач у эпика и обновление статуса
+        }
         subtasks.clear();
     }
 
     public void removeAllEpics() {
+        for (Epic epic : epics.values()) {
+            for (Subtask subtask : epic.getSubtasks()) {
+                subtasks.remove(subtask.getId());
+            }
+        }
         epics.clear();
     }
 
-    // Методы для получения всех задач, подзадач и эпиков
-    public Map<Integer, Task> getTasks() {
-        return tasks;
+    // Получение коллекций задач, подзадач и эпиков
+    public Collection<Task> getTasks() {
+        return tasks.values();
     }
 
-    public Map<Integer, Subtask> getSubtasks() {
-        return subtasks;
+    public Collection<Subtask> getSubtasks() {
+        return subtasks.values();
     }
 
-    public Map<Integer, Epic> getEpics() {
-        return epics;
+    public Collection<Epic> getEpics() {
+        return epics.values();
     }
 
-    // Метод для получения подзадач эпика
-    public Map<Integer, Subtask> getSubtasksOfEpic(int epicId) {
-        Map<Integer, Subtask> epicSubtasks = new HashMap<>();
+    // Получение подзадач конкретного эпика
+    public List<Subtask> getSubtasksOfEpic(int epicId) {
+        List<Subtask> epicSubtasks = new ArrayList<>();
         for (Subtask subtask : subtasks.values()) {
             if (subtask.getEpicId() == epicId) {
-                epicSubtasks.put(subtask.getId(), subtask);
+                epicSubtasks.add(subtask);
             }
         }
         return epicSubtasks;
     }
 
-    // Вывод всех задач, подзадач и эпиков (оставлены для удобства тестирования)
+    // Вывод на консоль
     public void printTasks() {
         tasks.forEach((id, task) -> System.out.println(task));
     }

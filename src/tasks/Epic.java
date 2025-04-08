@@ -6,27 +6,33 @@ import java.util.List;
 public class Epic extends Task {
     private List<Subtask> subtasks = new ArrayList<>();
 
-    public Epic(String name, String description, TaskStatus status) {
-        super(name, description, status);
+    public Epic(String name, String description, TaskStatus aNew) {
+        super(name, description, TaskStatus.NEW); // Статус по умолчанию — NEW
     }
 
-    // Добавить подзадачу в эпик
     public void addSubtask(Subtask subtask) {
         subtasks.add(subtask);
     }
 
-    // Удалить подзадачу из эпика
     public void removeSubtask(Subtask subtask) {
         subtasks.remove(subtask);
     }
 
-    // Получить все подзадачи эпика
     public List<Subtask> getSubtasks() {
         return subtasks;
     }
 
-    // Обновить статус эпика в зависимости от статусов подзадач
+    public void clearSubtasks() {
+        subtasks.clear();
+        updateStatus();
+    }
+
     public void updateStatus() {
+        if (subtasks.isEmpty()) {
+            setStatus(TaskStatus.NEW);
+            return;
+        }
+
         boolean allDone = true;
         boolean anyInProgress = false;
 
@@ -50,6 +56,12 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{id=" + getId() + ", name='" + getName() + "', description='" + getDescription() + "', status=" + getStatus() + ", subtasks=" + subtasks.size() + "}";
+        return "Epic{" +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", subtasks=" + subtasks.size() +
+                '}';
     }
 }
