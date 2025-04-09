@@ -71,23 +71,20 @@ public class TaskManager {
 
     public void removeAllSubtasks() {
         for (Epic epic : epics.values()) {
-            epic.clearSubtasks(); // Очистка подзадач у эпика и обновление статуса
+            epic.clearSubtasks();
+            epic.updateStatus(); // Обновляем статус после очистки подзадач
         }
         subtasks.clear();
     }
 
     public void removeAllEpics() {
-        for (Epic epic : epics.values()) {
-            for (Subtask subtask : epic.getSubtasks()) {
-                subtasks.remove(subtask.getId());
-            }
-        }
         epics.clear();
+        subtasks.clear(); // Удаляем подзадачи всех эпиков, не нужно идти по каждому
     }
 
     // Получение коллекций задач, подзадач и эпиков
     public Collection<Task> getTasks() {
-        return tasks.values();
+        return new ArrayList<>(tasks.values()); // Возвращаем копию
     }
 
     public Collection<Subtask> getSubtasks() {
