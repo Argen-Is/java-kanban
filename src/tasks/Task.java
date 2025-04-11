@@ -1,25 +1,30 @@
 package tasks;
 
+import java.util.Objects;
+
 public class Task {
-    private static int idCounter = 1;
     private int id;
-    private String name;
+    private String title;
     private String description;
     private TaskStatus status;
 
-    public Task(String name, String description, TaskStatus status) {
-        this.id = idCounter++;
-        this.name = name;
+    public Task(String title, String description, TaskStatus status) {
+        this.title = title;
         this.description = description;
-        this.status = status;
+        this.status = status != null ? status : TaskStatus.NEW;
     }
 
+    // ID сеттер — менеджер должен задавать ID
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getDescription() {
@@ -35,20 +40,25 @@ public class Task {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Task task = (Task) obj;
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
         return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Task{id=" + id + ", name='" + name + "', description='" + description + "', status=" + status + "}";
+        return Objects.hash(id);
     }
 }

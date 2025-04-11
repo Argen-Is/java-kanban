@@ -3,8 +3,13 @@ package tasks;
 public class Subtask extends Task {
     private int epicId;
 
-    public Subtask(String name, String description, TaskStatus status, int epicId) {
-        super(name, description, status);
+    public Subtask(int id, String taskTitle, String taskDescription, TaskStatus taskStatus, int epicId) {
+        super(taskTitle, taskDescription, taskStatus);
+        this.epicId = epicId;
+    }
+
+    public Subtask(String taskTitle, String taskDescription, TaskStatus taskStatus, int epicId) {
+        super(taskTitle, taskDescription, taskStatus);
         this.epicId = epicId;
     }
 
@@ -12,8 +17,7 @@ public class Subtask extends Task {
         return epicId;
     }
 
-    @Override
-    public String toString() {
-        return "Subtask{id=" + getId() + ", name='" + getName() + "', description='" + getDescription() + "', status=" + getStatus() + ", epicId=" + epicId + "}";
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 }
