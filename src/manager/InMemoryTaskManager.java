@@ -145,10 +145,15 @@ public class InMemoryTaskManager implements TaskManager {
         boolean allNew = true;
 
         for (Subtask subtask : epicSubtasks) {
-            if (subtask.getStatus() != TaskStatus.DONE) {
+            TaskStatus status = subtask.getStatus();
+            if (status == TaskStatus.IN_PROGRESS) {
+                epic.setStatus(TaskStatus.IN_PROGRESS);
+                return;
+            }
+            if (status != TaskStatus.DONE) {
                 allDone = false;
             }
-            if (subtask.getStatus() != TaskStatus.NEW) {
+            if (status != TaskStatus.NEW) {
                 allNew = false;
             }
         }
@@ -199,6 +204,53 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epics.put(epic.getId(), epic);
         updateEpicStatus(epic);
+    }
+
+    @Override
+    public void deleteTask(int id) {
+        tasks.remove(id);
+    }
+
+    @Override
+    public void deleteSubtask(int id) {
+        Subtask subtask = subtasks.remove(id);
+        if (subtask != null) {
+            Epic epic = epics.get(subtask.getEpicId());
+            if (epic != null) {
+                epic.removeSubtask(subtask);
+                updateEpicStatus(epic);
+            }
+        }
+    }
+
+    @Override
+    public void deleteEpic(int id) {
+        Epic epic = epics.remove(id);
+        if (epic != null) {
+            for (Subtask subtask : epic.getSubtasks()) {
+                subtasks.remove(subtask.getId());
+            }
+        }
+    }
+
+    @Override
+    public void deleteTasks() {
+        tasks.clear();
+    }
+
+    @Override
+    public void deleteSubtasks() {
+        subtasks.clear();
+        for (Epic epic : epics.values()) {
+            epic.clearSubtasks();
+            updateEpicStatus(epic);
+        }
+    }
+
+    @Override
+    public void deleteEpics() {
+        epics.clear();
+        subtasks.clear();
     }
 
     private int generateId() {
